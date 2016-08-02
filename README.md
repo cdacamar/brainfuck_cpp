@@ -5,5 +5,7 @@ a Brainfuck compiler that will compile a Brainfuck program into a Javascript dri
 why? idk...
 
 TODOs:
-[ ] optimize
-[ ] canvas support?
+-
+
+- [ ] optimize
+- [ ] canvas support?
