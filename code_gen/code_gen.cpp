@@ -66,7 +66,7 @@ static std::string cmd_to_js(const cmd::command& c) {
     void operator()(const cmd::shift& s) const override {
       auto amount = (s.type == cmd::shift::shift_type::right ? static_cast<std::int32_t>(s.amount) : -static_cast<std::int32_t>(s.amount));
       *ss <<
-        "function() { if (cur_ + " << amount << " < -456456) { self_.seg_fault(); return; } " <<
+        "function() { if (cur_ + " << amount << " < 0) { self_.seg_fault(); return; } " <<
         "cur_ += " << amount << "; " <<
         "if (value_arr_[cur_] === undefined) { value_arr_[cur_] = 0; } " <<
         "SP_ += 1; }";
@@ -124,7 +124,7 @@ R";;(var Program = function() {
   }
 
   const char* rest =
-    R";;(];
+R";;(];
     },
     get_char: function() {
       var input = io_mgr_.poll_char();
@@ -228,7 +228,7 @@ R";;(</body>
 
 void js_generator::emit_base_js_() {
   const char* base_js =
-    R";;(<script>
+R";;(<script>
 window.addEventListener('load', function() {
   var input_text  = document.getElementById('in');
   var output_text = document.getElementById('out');
@@ -311,6 +311,6 @@ var IO_mgr = function() {
   file_ << base_js;
 }
 
-}
+} // namespace code_gen
 
-}
+} // namespace bf

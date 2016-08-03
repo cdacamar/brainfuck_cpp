@@ -95,26 +95,24 @@ void dump_tokens(bf::lex::lexer& l) {
 
   using namespace std::literals;
   std::string headers[] = {
-    "Token"s,
-    "Line"s,
+    "Token "s,
+    "Line "s,
     "Column"s
   };
   std::vector<std::tuple<std::string, std::string, std::string>> tokens;
-
-  while (tok.type != bf::lex::token_t::eof) {
-    tokens.emplace_back("'"s + bf::lex::tok_to_c(tok.type) + "'"s, std::to_string(tok.pos.line), std::to_string(tok.pos.col));
-    tok = l.next_token();
-  }
-
   std::size_t longest[] = {
     headers[0].size(),
     headers[1].size(),
     headers[2].size()
   };
-  for (const auto& t : tokens) {
-    longest[0] = std::max(longest[0], std::get<0>(t).size());
-    longest[1] = std::max(longest[1], std::get<1>(t).size());
-    longest[2] = std::max(longest[2], std::get<2>(t).size());
+
+  while (tok.type != bf::lex::token_t::eof) {
+    tokens.emplace_back("'"s + bf::lex::tok_to_c(tok.type) + "'"s, std::to_string(tok.pos.line), std::to_string(tok.pos.col));
+    tok = l.next_token();
+
+    longest[0] = std::max(longest[0], std::get<0>(tokens.back()).size());
+    longest[1] = std::max(longest[1], std::get<1>(tokens.back()).size());
+    longest[2] = std::max(longest[2], std::get<2>(tokens.back()).size());
   }
 
   // output
@@ -166,7 +164,7 @@ void dump_command(const bf::cmd::command& c, std::size_t indent) {
       std::cout << "}";
     }
     void operator()(const bf::cmd::shift& s) const override {
-      std::cout << "arithmetic: type{" << (s.type == bf::cmd::shift::shift_type::left ? "left" : "right") << "} amount{" << s.amount << "}";
+      std::cout << "shift: type{" << (s.type == bf::cmd::shift::shift_type::left ? "left" : "right") << "} amount{" << s.amount << "}";
     }
   } pv{ indent };
   c.accept(pv);

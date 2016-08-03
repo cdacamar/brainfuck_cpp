@@ -42,6 +42,7 @@ token lexer::next_token() {
   while (!file_.eof()) {
     char c = current_;
     auto p = c_pos_;
+    next_c_();
 
     switch (c) {
       case tok_to_c(token_t::l_shift):
@@ -52,12 +53,10 @@ token lexer::next_token() {
       case tok_to_c(token_t::in):
       case tok_to_c(token_t::l_bracket):
       case tok_to_c(token_t::r_bracket):
-        next_c_();
         return { p, static_cast<token_t>(c) };
       default:
         ;
     }
-    next_c_();
   }
   return { c_pos_, token_t::eof };
 }

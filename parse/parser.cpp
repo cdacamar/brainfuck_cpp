@@ -40,6 +40,7 @@ bool parser::expect_(lex::token_t tok) {
   next_token_();
   return true;
 }
+
 std::unique_ptr<cmd::command> parser::parse_stmt_() {
   std::unique_ptr<cmd::command> stmt;
 
