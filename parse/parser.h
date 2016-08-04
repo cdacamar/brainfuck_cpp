@@ -16,8 +16,8 @@ class parser {
   std::vector<std::string> errors_;
 
   bool expect_(lex::token_t tok);
-  std::unique_ptr<cmd::command> parse_stmt_();
-  std::unique_ptr<cmd::loop>    parse_loop_();
+  std::shared_ptr<cmd::command> parse_stmt_();
+  std::shared_ptr<cmd::loop>    parse_loop_();
   void next_token_();
 public:
   parser(lex::lexer& lexer) : lexer_{ lexer } { }

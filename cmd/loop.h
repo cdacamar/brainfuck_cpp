@@ -6,7 +6,7 @@ namespace bf {
 namespace cmd {
 
 struct loop : command {
-  using cmd_list_t = std::vector<std::unique_ptr<command>>;
+  using cmd_list_t = std::vector<std::shared_ptr<const command>>;
   cmd_list_t statements;
 
   loop(cmd_list_t statements) : statements{ std::move(statements) } { }

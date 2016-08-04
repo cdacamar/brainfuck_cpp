@@ -1,8 +1,9 @@
+#include <parse/parser.h>
+
 #include <sstream>
 #include <string> // for std::literals::string_literals
 
 #include <lex/lexer.h>
-#include <parse/parser.h>
 
 // commands
 #include <cmd/arithmetic.h>
@@ -41,27 +42,27 @@ bool parser::expect_(lex::token_t tok) {
   return true;
 }
 
-std::unique_ptr<cmd::command> parser::parse_stmt_() {
-  std::unique_ptr<cmd::command> stmt;
+std::shared_ptr<cmd::command> parser::parse_stmt_() {
+  std::shared_ptr<cmd::command> stmt;
 
   switch (c_tok_.type) {
     case lex::token_t::l_shift:
-      stmt = std::make_unique<cmd::shift>(cmd::shift::shift_type::left);
+      stmt = std::make_shared<cmd::shift>(cmd::shift::shift_type::left);
       break;
     case lex::token_t::r_shift:
-      stmt = std::make_unique<cmd::shift>(cmd::shift::shift_type::right);
+      stmt = std::make_shared<cmd::shift>(cmd::shift::shift_type::right);
       break;
     case lex::token_t::inc:
-      stmt = std::make_unique<cmd::arithmetic>(cmd::arithmetic::arith_type::add);
+      stmt = std::make_shared<cmd::arithmetic>(cmd::arithmetic::arith_type::add);
       break;
     case lex::token_t::dec:
-      stmt = std::make_unique<cmd::arithmetic>(cmd::arithmetic::arith_type::sub);
+      stmt = std::make_shared<cmd::arithmetic>(cmd::arithmetic::arith_type::sub);
       break;
     case lex::token_t::out:
-      stmt = std::make_unique<cmd::io>(cmd::io::io_type::out);
+      stmt = std::make_shared<cmd::io>(cmd::io::io_type::out);
       break;
     case lex::token_t::in:
-      stmt = std::make_unique<cmd::io>(cmd::io::io_type::in);
+      stmt = std::make_shared<cmd::io>(cmd::io::io_type::in);
       break;
     case lex::token_t::l_bracket:
     case lex::token_t::r_bracket:
@@ -74,7 +75,7 @@ std::unique_ptr<cmd::command> parser::parse_stmt_() {
   return stmt;
 }
 
-std::unique_ptr<cmd::loop> parser::parse_loop_() {
+std::shared_ptr<cmd::loop> parser::parse_loop_() {
   cmd::loop::cmd_list_t commands;
 
   auto c = c_tok_;
@@ -106,7 +107,7 @@ std::unique_ptr<cmd::loop> parser::parse_loop_() {
 
   if (!expect_(lex::token_t::r_bracket)) return nullptr; // eat ']'
 
-  return std::make_unique<cmd::loop>(std::move(commands));
+  return std::make_shared<cmd::loop>(std::move(commands));
 }
 
 void parser::next_token_() {

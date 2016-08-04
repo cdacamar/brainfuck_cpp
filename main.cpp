@@ -7,6 +7,7 @@
 
 #include <code_gen/code_gen.h>
 #include <lex/lexer.h>
+#include <optimize/optimizer.h>
 #include <parse/parser.h>
 
 void dump_tokens(bf::lex::lexer& l);
@@ -18,6 +19,7 @@ int main(int argc, const char* argv[]) {
     dump_commands,
     compile
   } mode = mode_t::compile;
+  bool optimize_ = false;
 
   const char* filename = nullptr;
   std::string outfile  = "a.html";
@@ -32,6 +34,9 @@ int main(int argc, const char* argv[]) {
     }
     else if (std::strcmp(arg, "--dump-commands") == 0) {
       mode = mode_t::dump_commands;
+    }
+    else if (std::strcmp(arg, "--optimize") == 0) {
+      optimize_ = true;
     }
     else if (std::strcmp(arg, "-o") == 0 && i + 1 < argc) {
       outfile = argv[i + 1];
@@ -66,6 +71,10 @@ int main(int argc, const char* argv[]) {
         std::cerr << e << '\n';
       }
       return 1;
+    }
+
+    if (optimize_) {
+      optimize::optimize(program);
     }
 
     if (mode == mode_t::dump_commands) {

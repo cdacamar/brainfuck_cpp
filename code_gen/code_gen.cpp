@@ -1,6 +1,6 @@
-#include <sstream>
-
 #include <code_gen/code_gen.h>
+
+#include <sstream>
 
 // commands
 #include <cmd/arithmetic.h>

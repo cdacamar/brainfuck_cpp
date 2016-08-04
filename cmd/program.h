@@ -32,7 +32,7 @@ struct command::visitor {
 namespace prog {
 
 // a program is composed of a list of commands
-using program = std::vector<std::unique_ptr<const cmd::command>>;
+using program = std::vector<std::shared_ptr<const cmd::command>>;
 
 inline bool ill_formed(const program& p) { return p.empty(); }
 
