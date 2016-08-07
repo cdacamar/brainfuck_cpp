@@ -201,7 +201,7 @@ R";;(<!DOCTYPE html>
   const char* to_prog =
 R";;(<body>
 <div class='input'>
-<label for='in'>Input</label>
+<label for='in'>Input (Hit CTRL-C to issue EOF)</label>
 <textarea id='in'></textarea>
 </div>
 
@@ -256,11 +256,14 @@ window.addEventListener('load', function() {
 
 var IO_mgr = function() {
   var key_id_ = {
-    ENTER: 13
+    ENTER: 13,
+    CTRL:  17,
+    C:     67
   };
-  var input_  = undefined;
-  var output_ = undefined;
-  var lines_  = [];
+  var input_    = undefined;
+  var output_   = undefined;
+  var lines_    = [];
+  var key_down_ = [];
 
   return {
     init: function(input, output) {
@@ -293,15 +296,22 @@ var IO_mgr = function() {
       output_.value += line + '\n';
     },
     handle_keydown: function(e) {
+      key_down_[e.keyCode] = true;
       if (e.keyCode === key_id_.ENTER) {
         e.preventDefault();
       }
     },
     handle_keyup: function(e) {
+      if (key_down_[key_id_.CTRL] && e.keyCode == key_id_.C) {
+        // add EOF char, ie '\0'
+        lines_.push('\0');
+      }
       if (e.keyCode === key_id_.ENTER) {
         lines_.push(input_.value.split('\n').pop());
         input_.value += '\n';
       }
+
+      key_down_[e.keyCode] = false;
     }
   };
 };
