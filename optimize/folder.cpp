@@ -51,30 +51,33 @@ struct folding_visitor : cmd::command::visitor {
     auto arith_end = std::find_if(*first, *last, [](const auto& c) {
       return !is<cmd::arithmetic>(*c);
     });
-    if (arith_end != *first) {
-      // build the new arithmetic sequence
-      std::int32_t total_amount = 0; // we're going to transform this to an unsigned at the end
-      for (auto it = *first; it != arith_end; ++it) {
-        const auto& arith = static_cast<const cmd::arithmetic&>(**it);
-        total_amount += arith.type == cmd::arithmetic::arith_type::add ?
-          static_cast<std::int32_t>(arith.amount) :
-          -static_cast<std::int32_t>(arith.amount);
-      }
-      if (total_amount == 0) {
-        // remove these altogether since there is no meaningful math happening
-        *last = std::rotate(*first, arith_end, *last);
-        return;
-      }
-      // remove others
-      *last = std::rotate(*first, --arith_end, *last);
-      if (total_amount < 0) {
-        **first = std::make_shared<cmd::arithmetic>(cmd::arithmetic::arith_type::sub, static_cast<std::uint32_t>(-total_amount));
-      }
-      else {
-        **first = std::make_shared<cmd::arithmetic>(cmd::arithmetic::arith_type::add, static_cast<std::uint32_t>(total_amount));
-      }
+    // if the sequence is a single instruction, skip it, no folding can be done
+    if (std::distance(*first, arith_end) <= 1) {
       ++*first;
+      return;
     }
+    // build the new arithmetic sequence
+    std::int32_t total_amount = 0; // we're going to transform this to an unsigned at the end
+    for (auto it = *first; it != arith_end; ++it) {
+      const auto& arith = static_cast<const cmd::arithmetic&>(**it);
+      total_amount += arith.type == cmd::arithmetic::arith_type::add ?
+        static_cast<std::int32_t>(arith.amount) :
+        -static_cast<std::int32_t>(arith.amount);
+    }
+    if (total_amount == 0) {
+      // remove these altogether since there is no meaningful math happening
+      *last = std::rotate(*first, arith_end, *last);
+      return;
+    }
+    // remove others
+    *last = std::rotate(*first, --arith_end, *last);
+    if (total_amount < 0) {
+      **first = std::make_shared<cmd::arithmetic>(cmd::arithmetic::arith_type::sub, static_cast<std::uint32_t>(-total_amount));
+    }
+    else {
+      **first = std::make_shared<cmd::arithmetic>(cmd::arithmetic::arith_type::add, static_cast<std::uint32_t>(total_amount));
+    }
+    ++*first;
   }
   void operator()(const cmd::io&) const override {
     // no transformation
@@ -99,30 +102,33 @@ struct folding_visitor : cmd::command::visitor {
     auto shift_end = std::find_if(*first, *last, [](const auto& c) {
       return !is<cmd::shift>(*c);
     });
-    if (shift_end != *first) {
-      // build the new arithmetic sequence
-      std::int32_t total_amount = 0; // we're going to transform this to an unsigned at the end
-      for (auto it = *first; it != shift_end; ++it) {
-        const auto& sh = static_cast<const cmd::shift&>(**it);
-        total_amount += sh.type == cmd::shift::shift_type::right ?
-          static_cast<std::int32_t>(sh.amount) :
-          -static_cast<std::int32_t>(sh.amount);
-      }
-      if (total_amount == 0) {
-        // remove these altogether since there is no meaningful math happening
-        *last  = std::rotate(*first, shift_end, *last);
-        return;
-      }
-      // remove others
-      *last = std::rotate(*first, --shift_end, *last);
-      if (total_amount < 0) {
-        **first = std::make_shared<cmd::shift>(cmd::shift::shift_type::left, static_cast<std::uint32_t>(-total_amount));
-      }
-      else {
-        **first = std::make_shared<cmd::shift>(cmd::shift::shift_type::right, static_cast<std::uint32_t>(total_amount));
-      }
+    // if the sequence is a single instruction, skip it, no folding can be done
+    if (std::distance(*first, shift_end) <= 1) {
       ++*first;
+      return;
     }
+    // build the new shift sequence
+    std::int32_t total_amount = 0; // we're going to transform this to an unsigned at the end
+    for (auto it = *first; it != shift_end; ++it) {
+      const auto& sh = static_cast<const cmd::shift&>(**it);
+      total_amount += sh.type == cmd::shift::shift_type::right ?
+        static_cast<std::int32_t>(sh.amount) :
+        -static_cast<std::int32_t>(sh.amount);
+    }
+    if (total_amount == 0) {
+      // remove these altogether since there is no meaningful math happening
+      *last = std::rotate(*first, shift_end, *last);
+      return;
+    }
+    // remove others
+    *last = std::rotate(*first, --shift_end, *last);
+    if (total_amount < 0) {
+      **first = std::make_shared<cmd::shift>(cmd::shift::shift_type::left, static_cast<std::uint32_t>(-total_amount));
+    }
+    else {
+      **first = std::make_shared<cmd::shift>(cmd::shift::shift_type::right, static_cast<std::uint32_t>(total_amount));
+    }
+    ++*first;
   }
 };
 
