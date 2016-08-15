@@ -5,12 +5,12 @@ project(brainfuck_cpp)
 include_directories(./)
 
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
-  set(DEBUG_FLAGS, "/GS /W3 /Gm /Zl /Od /Oy-")
-  set(RELEASE_FLAGS, "/GS /GL /W3 /Gy /Zi /O2")
+  set(DEBUG_FLAGS "/GS /W3 /Gm- /Zi /Od /Oy- /Ob0 /D\"_DEBUG\" /MDd")
+  set(RELEASE_FLAGS "/GS /GL /W3 /Gy /Zi /O2 /MD")
   set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 else()
-  set(DEBUG_FLAGS, "-g -O0 -Wall")
-  set(RELEASE_FLAGS, "-O3")
+  set(DEBUG_FLAGS "-g -O0 -Wall")
+  set(RELEASE_FLAGS "-O3")
 endif()
 
 set(CMAKE_CXX_FLAGS_DEBUG ${DEBUG_FLAGS})
@@ -19,8 +19,8 @@ set(CMAKE_CXX_FLAGS_RELEASE ${RELEASE_FLAGS})
 set(CMAKE_CONFIGURATION_TYPES Debug Release)
 
 file(GLOB_RECURSE CMD_SRC RELATIVE_PATH
-      lex/*.cpp
-      lex/*.h)
+      cmd/*.cpp
+      cmd/*.h)
 source_group("cmd" FILES ${CMD_SRC})
 
 file(GLOB_RECURSE CODE_GEN_SRC RELATIVE_PATH
