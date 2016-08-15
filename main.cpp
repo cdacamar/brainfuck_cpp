@@ -10,6 +10,7 @@
 #include <optimize/optimizer.h>
 #include <parse/parser.h>
 
+void dump_help(const char **argv);
 void dump_tokens(bf::lex::lexer& l);
 void dump_commands(const bf::prog::program& p);
 
@@ -42,14 +43,20 @@ int main(int argc, const char* argv[]) {
       outfile = argv[i + 1];
       ++i;
     }
+    else if (std::strcmp(arg, "-h") == 0) {
+      dump_help(argv);
+      return 1;
+    }
     else {
       std::cerr << "unexpected argument: " << arg << '\n';
+      dump_help(argv);
       return 1;
     }
   }
 
   if (!filename) {
     std::cerr << "no input\n";
+    dump_help(argv);
     return 1;
   }
 
@@ -97,6 +104,11 @@ int main(int argc, const char* argv[]) {
     std::cerr << "failed to open file: " << filename << ": " << e.what();
     return 1;
   }
+}
+
+void dump_help(const char **argv) {
+  std::cerr << "Usage: " << argv[0] << " [--dump-tokens] [--dump-commands] [--optimize] [-o outfile] [-h help]"
+            << " brainfuck_file" << std::endl;
 }
 
 void dump_tokens(bf::lex::lexer& l) {
