@@ -9,14 +9,15 @@ if (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
   set(RELEASE_FLAGS "/GS /GL /W3 /Gy /Zi /O2 /MD")
   set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 else()
-  set(DEBUG_FLAGS "-g -O0 -Wall")
-  set(RELEASE_FLAGS "-O3")
+  set(DEBUG_FLAGS "-g -O0 -Wall -std=c++14")
+  set(RELEASE_FLAGS "-O3 -Wall -std=c++14")
 endif()
 
 set(CMAKE_CXX_FLAGS_DEBUG ${DEBUG_FLAGS})
 set(CMAKE_CXX_FLAGS_RELEASE ${RELEASE_FLAGS})
 
 set(CMAKE_CONFIGURATION_TYPES Debug Release)
+set(CMAKE_BUILD_TYPE "Debug")
 
 file(GLOB_RECURSE CMD_SRC RELATIVE_PATH
       cmd/*.cpp
