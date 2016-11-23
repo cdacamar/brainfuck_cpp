@@ -20,24 +20,24 @@ enum class token_t : char {
 };
 constexpr char tok_to_c(token_t t) { return static_cast<char>(t); }
 
-struct position {
+struct position_t {
   std::string   name;
   std::uint32_t line = 1u;
   std::uint32_t col  = 0u;
 
-  position()                = default;
-  position(const position&) = default;
-  position(position&& mv): name{ std::move(mv.name) }, line{ mv.line }, col{ mv.col } { }
+  position_t()                = default;
+  position_t(const position_t&) = default;
+  position_t(position_t&& mv): name{ std::move(mv.name) }, line{ mv.line }, col{ mv.col } { }
 
-  position& operator=(const position&) = default;
-  position& operator=(position&&)      = default;
+  position_t& operator=(const position_t&) = default;
+  position_t& operator=(position_t&&)      = default;
 };
 
 struct token {
-  position pos;
-  token_t  type;
+  position_t pos;
+  token_t    type;
 
-  token(position pos, token_t type): pos{ std::move(pos) }, type{ type } { }
+  token(position_t pos, token_t type): pos{ std::move(pos) }, type{ type } { }
   token() : type{ token_t::eof } { }
   token(const token&) = default;
   token(token&&)      = default;

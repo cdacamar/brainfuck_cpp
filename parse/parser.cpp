@@ -102,6 +102,8 @@ std::shared_ptr<cmd::loop> parser::parse_loop_() {
         errors_.emplace_back(make_error_custom(c, "error trying to match"));
         errors_.emplace_back("unexpected EOF");
         return nullptr; // we can't hit this while in a loop
+      case lex::token_t::r_bracket:
+        break; // noop
     }
   }
 
@@ -145,6 +147,8 @@ prog::program parser::parse() {
         p.clear(); // ill-formed
         c_tok_.type = lex::token_t::eof;
         break;
+      case lex::token_t::eof:
+        break; // noop
     }
   } while (c_tok_.type != lex::token_t::eof);
 
